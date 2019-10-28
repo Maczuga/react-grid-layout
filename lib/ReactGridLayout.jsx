@@ -265,7 +265,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     this.onLayoutMaybeChanged(this.state.layout, this.props.layout);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     let newLayoutBase;
     // Legacy support for compactType
     // Allow parent to set layout directly.
@@ -275,12 +275,12 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     ) {
       newLayoutBase = nextProps.layout;
     } else if (!isEqual(nextProps.layout, this.state.layout)) {
-    // When props are out of sync with the state
+      // When props are out of sync with the state
       newLayoutBase = nextProps.layout;
     } else if (!childrenEqual(this.props.children, nextProps.children)) {
-    // If children change, also regenerate the layout. Use our state
-    // as the base in case because it may be more up to date than
-    // what is in props.
+      // If children change, also regenerate the layout. Use our state
+      // as the base in case because it may be more up to date than
+      // what is in props.
       newLayoutBase = this.state.layout;
     }
 
