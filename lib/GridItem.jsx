@@ -215,8 +215,8 @@ export default class GridItem extends React.Component<Props, State> {
       // 0 * Infinity === NaN, which causes problems with resize constraints;
       // Fix this if it occurs.
       // Note we do it here rather than later because Infinity causes deopt
-      width: w === Infinity ? w : colWidth * w,
-      height: h === Infinity ? h : rowHeight * h
+      width: w === Infinity ? w : colWidth * w + Math.max(0, w - 1) * margin[0],
+      height: h === Infinity ? h : (rowHeight + margin[1]) * h
     };
 
     if (state && state.resizing) {
@@ -262,7 +262,7 @@ export default class GridItem extends React.Component<Props, State> {
     // (l - m) / (c + m) = x
     // x = (left - margin) / (coldWidth + margin)
     let x = Math.round((left - margin[0]) / (colWidth + margin[0]));
-    let y = Math.round((top - margin[1]) / (rowHeight + margin[1]));
+    let y = Math.round((top - margin[1]) / rowHeight);
 
     // Capping
     x = Math.max(Math.min(x, cols - w), 0);
@@ -291,7 +291,7 @@ export default class GridItem extends React.Component<Props, State> {
     // ...
     // w = (width + margin) / (colWidth + margin)
     let w = Math.round((width + margin[0]) / (colWidth + margin[0]));
-    let h = Math.round((height + margin[1]) / (rowHeight + margin[1]));
+    let h = Math.round((height + margin[1]) / rowHeight);
 
     // Capping
     w = Math.max(Math.min(w, cols - x), 0);
