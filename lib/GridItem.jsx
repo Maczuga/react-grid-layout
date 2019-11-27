@@ -1,24 +1,23 @@
 // @flow
+import type { Element as ReactElement, Node as ReactNode } from "react";
 import React from "react";
 import PropTypes from "prop-types";
 import { DraggableCore } from "react-draggable";
 import { Resizable } from "react-resizable";
-import {
-  perc,
-  setTopLeft,
-  setTransform,
-  isUnitRelative,
-  getViewportSize
-} from "./utils";
-import classNames from "classnames";
-import type { Element as ReactElement, Node as ReactNode } from "react";
-
 import type {
-  ReactDraggableCallbackData,
   GridDragEvent,
   GridResizeEvent,
-  Position
+  Position,
+  ReactDraggableCallbackData
 } from "./utils";
+import {
+  getViewportSize,
+  isUnitRelative,
+  perc,
+  setTopLeft,
+  setTransform
+} from "./utils";
+import classNames from "classnames";
 
 type PartialPosition = { top: number, left: number };
 type GridItemCallback<Data: GridDragEvent | GridResizeEvent> = (
@@ -216,9 +215,8 @@ export default class GridItem extends React.Component<Props, State> {
       // 0 * Infinity === NaN, which causes problems with resize constraints;
       // Fix this if it occurs.
       // Note we do it here rather than later because Infinity causes deopt
-      width: w === Infinity ? w : colWidth * w + Math.max(0, w - 1) * margin[0],
-      height:
-        h === Infinity ? h : rowHeight * h + Math.max(0, h - 1) * margin[1]
+      width: w === Infinity ? w : colWidth * w,
+      height: h === Infinity ? h : rowHeight * h
     };
 
     if (state && state.resizing) {
