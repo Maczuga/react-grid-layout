@@ -156,13 +156,15 @@ var GridItem = (function(_React$Component) {
 
     var out = {
       left: (colWidth + margin[0]) * x + containerPadding[0],
-      top: (rowHeight + margin[1]) * y + containerPadding[1],
+      top: rowHeight * y + containerPadding[1],
       // 0 * Infinity === NaN, which causes problems with resize constraints;
       // Fix this if it occurs.
       // Note we do it here rather than later because Infinity causes deopt
       width: w === Infinity ? w : colWidth * w + Math.max(0, w - 1) * margin[0],
-      height: h === Infinity ? h : (rowHeight + margin[1]) * h
+      height: h === Infinity ? h : rowHeight * h
     };
+
+    if (y > 0) out.top += margin[1];
 
     if (state && state.resizing) {
       out.width = state.resizing.width;
@@ -249,7 +251,7 @@ var GridItem = (function(_React$Component) {
     // ...
     // w = (width + margin) / (colWidth + margin)
     var w = Math.round((width + margin[0]) / (colWidth + margin[0]));
-    var h = Math.round((height + margin[1]) / rowHeight);
+    var h = Math.round(height / rowHeight);
 
     // Capping
     w = Math.max(Math.min(w, cols - x), 0);

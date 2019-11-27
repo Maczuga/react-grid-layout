@@ -1,23 +1,24 @@
 // @flow
-import type { Element as ReactElement, Node as ReactNode } from "react";
 import React from "react";
 import PropTypes from "prop-types";
 import { DraggableCore } from "react-draggable";
 import { Resizable } from "react-resizable";
-import type {
-  GridDragEvent,
-  GridResizeEvent,
-  Position,
-  ReactDraggableCallbackData
-} from "./utils";
 import {
-  getViewportSize,
-  isUnitRelative,
   perc,
   setTopLeft,
-  setTransform
+  setTransform,
+  isUnitRelative,
+  getViewportSize
 } from "./utils";
 import classNames from "classnames";
+import type { Element as ReactElement, Node as ReactNode } from "react";
+
+import type {
+  ReactDraggableCallbackData,
+  GridDragEvent,
+  GridResizeEvent,
+  Position
+} from "./utils";
 
 type PartialPosition = { top: number, left: number };
 type GridItemCallback<Data: GridDragEvent | GridResizeEvent> = (
@@ -211,13 +212,15 @@ export default class GridItem extends React.Component<Props, State> {
 
     const out = {
       left: (colWidth + margin[0]) * x + containerPadding[0],
-      top: (rowHeight + margin[1]) * y + containerPadding[1],
+      top: rowHeight * y + containerPadding[1],
       // 0 * Infinity === NaN, which causes problems with resize constraints;
       // Fix this if it occurs.
       // Note we do it here rather than later because Infinity causes deopt
       width: w === Infinity ? w : colWidth * w + Math.max(0, w - 1) * margin[0],
-      height: h === Infinity ? h : (rowHeight + margin[1]) * h
+      height: h === Infinity ? h : rowHeight * h
     };
+
+    if (y > 0) out.top += margin[1];
 
     if (state && state.resizing) {
       out.width = state.resizing.width;
@@ -291,7 +294,7 @@ export default class GridItem extends React.Component<Props, State> {
     // ...
     // w = (width + margin) / (colWidth + margin)
     let w = Math.round((width + margin[0]) / (colWidth + margin[0]));
-    let h = Math.round((height + margin[1]) / rowHeight);
+    let h = Math.round(height / rowHeight);
 
     // Capping
     w = Math.max(Math.min(w, cols - x), 0);
